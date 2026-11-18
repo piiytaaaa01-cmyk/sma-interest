@@ -1,0 +1,213 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMA INTEREST - Login Page</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- BAGIAN KIRI -->
+    <div class="left-section">
+
+        <h1>TEMUKAN MINAT<br>
+            TENTUKAN MASA DEPAN!
+        </h1>
+
+        <p>
+            Kenali minat dan bakatmu untuk menentukan pilihan
+            peminatan yang sesuai dengan potensi dan cita-citamu.
+        </p>
+
+        <div class="illustration">
+            <img src="ilustrasi.png" alt="Ilustrasi Siswa SMA">
+        </div>
+
+    </div>
+
+
+    <!-- BAGIAN KANAN -->
+    <div class="right-section">
+
+        <div class="login-box">
+
+            <h2>SMA INTEREST</h2>
+
+            <h3>Selamat Datang!</h3>
+
+            <p class="subtitle">
+                Silakan masuk untuk menentukan pilihan peminatanmu!
+            </p>
+
+            <form id="loginForm">
+
+                <div class="input-group">
+                    <label for="email">Username / Email</label>
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="Masukkan email kamu"
+                        required
+                    >
+                </div>
+
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Masukkan password kamu"
+                        required
+                    >
+                </div>
+
+                <button type="submit" id="loginBtn">
+                    LANJUTKAN
+                </button>
+
+            </form>
+
+            <p id="message"></p>
+
+            <div class="register">
+    Belum punya akun?
+    <a href="daftar.html" id="daftarLink">Daftar Sekarang</a>
+</div>
+
+            <div class="divider">
+                ATAU MASUK MENGGUNAKAN
+            </div>
+
+            <button class="google-btn" id="googleBtn" type="button">
+                <span class="google-icon">G</span>
+                Google
+            </button>
+
+            <footer>
+                © 2026 SMA INTEREST. All Rights Reserved
+            </footer>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- FIREBASE -->
+<script type="module">
+
+    import { initializeApp } from
+    "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
+
+    import { getAuth, signInWithEmailAndPassword,
+    GoogleAuthProvider, signInWithPopup }
+    from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
+
+
+    // KONFIGURASI FIREBASE
+    const firebaseConfig = {
+        apiKey: "AIzaSyCZ3tZVwpFruSjw-0QqGFa4XGsLDVl7tbI",
+        authDomain: "sma-interest.firebaseapp.com",
+        projectId: "sma-interest",
+        storageBucket: "sma-interest.firebasestorage.app",
+        messagingSenderId: "831507310144",
+        appId: "1:831507310144:web:297d20f89d4005256ea1a5",
+        measurementId: "G-RE2N85H139"
+    };
+
+
+    // INISIALISASI FIREBASE
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const provider = new GoogleAuthProvider();
+
+
+    // LOGIN EMAIL DAN PASSWORD
+    const loginForm = document.getElementById("loginForm");
+
+    loginForm.addEventListener("submit", async (e) => {
+
+        e.preventDefault();
+
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        const message = document.getElementById("message");
+        const loginBtn = document.getElementById("loginBtn");
+
+        loginBtn.disabled = true;
+        loginBtn.textContent = "MEMPROSES...";
+
+        try {
+
+            const userCredential = await signInWithEmailAndPassword(
+                auth,
+                email,
+                password
+            );
+
+            message.style.color = "green";
+            message.textContent = "Login berhasil! Selamat datang.";
+
+            // GANTI TUJUAN INI DENGAN HALAMAN DASHBOARD KAMU
+            window.location.href = "dashboard.html";
+
+        } catch (error) {
+
+            message.style.color = "red";
+
+            if (error.code === "auth/invalid-credential") {
+                message.textContent = "Email atau password salah.";
+            } else if (error.code === "auth/user-not-found") {
+                message.textContent = "Akun tidak ditemukan.";
+            } else {
+                message.textContent = "Login gagal: " + error.message;
+            }
+
+        } finally {
+
+            loginBtn.disabled = false;
+            loginBtn.textContent = "LANJUTKAN";
+
+        }
+
+    });
+
+
+    // LOGIN GOOGLE
+    document.getElementById("googleBtn").addEventListener("click", async () => {
+
+        const message = document.getElementById("message");
+
+        try {
+
+            const result = await signInWithPopup(auth, provider);
+
+            message.style.color = "green";
+            message.textContent = "Login Google berhasil!";
+
+            window.location.href = "dashboard.html";
+
+        } catch (error) {
+
+            message.style.color = "red";
+            message.textContent = "Login Google gagal: " + error.message;
+
+        }
+
+    });
+
+
+
+
+</script>
+
+</body>
+</html>
